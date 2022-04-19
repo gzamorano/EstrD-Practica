@@ -101,13 +101,12 @@ pasosHastaTesoro (Cofre objs cam) =  if(hayAlgunTesoro objs)
 -----------------------------------------------------------
 hayTesoroEn :: Int -> Camino -> Bool
 -- PRECOND: el camino tiene al menos n pasos para recorrer
+-- revisarlo, hacerlo devuelta siguiendo los pasos de la recursión
 hayTesoroEn _ Fin              = False
-hayTesoroEn n (Nada cam)       = if(n == 0) 
-                                    then False
-                                    else hayTesoroEn (n-1) cam
-hayTesoroEn n (Cofre objs cam) = if(n == 0)
-                                    then hayAlgunTesoro objs
-                                    else hayTesoroEn (n-1) cam
+hayTesoroEn 0 (Nada cam)       = False
+hayTesoroEn n (Nada cam)       = hayTesoroEn (n-1) cam
+hayTesoroEn 0 (Cofre objs cam) = hayAlgunTesoro objs
+hayTesoroEn n (Cofre objs cam) = hayTesoroEn (n-1) cam
 
 ----------------------------------------------------------- 
 alMenosNTesoros :: Int -> Camino -> Bool
@@ -125,9 +124,9 @@ tesorosEn (obj:objs) = unoSi (esTesoro obj) + tesorosEn objs
 
 -----------------------------------------------------------
 cantTesorosEntre :: Int -> Int -> Camino -> Int
--- PRECOND: el segundo número dado no puede ser menor que el primero
-cantTesorosEntre n n1 Fin              = 0
-cantTesorosEntre n n1 (Nada cam)       = cantTesorosEntre (n-1) (n1-1) cam
-cantTesorosEntre n n1 (Cofre objs cam) = if (n <= 0 && n1 >= 0)
-                                            then tesorosEn objs + cantTesorosEntre (n-1) (n1-1) cam
-                                            else cantTesorosEntre (n-1) (n1-1) cam
+-- PRECOND: j >= i
+cantTesorosEntre _ _ Fin              = 0
+cantTesorosEntre i j (Nada cam)       = cantTesorosEntre (i-1) (j-1) cam
+cantTesorosEntre i j (Cofre objs cam) = if (i <= 0 && j >= 0)
+                                            then tesorosEn objs + cantTesorosEntre (i-1) (j-1) cam
+                                            else cantTesorosEntre (i-1) (j-1) cam
