@@ -66,6 +66,10 @@ cantCapasPorPizza :: [Pizza] -> [ (Int, Pizza) ]
 --Dada una lista de pizzas devuelve un par donde la primera componente es la cantidad de
 --ingredientes de la pizza, y la respectiva pizza como segunda componente.
 cantCapasPorPizza []     = []
-cantCapasPorPizza (p:ps) = (cantidadDeCapas p, p) : cantCapasPorPizza ps
+cantCapasPorPizza (p:ps) = agregarPizza p (cantCapasPorPizza ps)
 
-
+-- revisar
+agregarPizza :: Pizza -> [ (Int, Pizza) ] -> [ (Int, Pizza) ]
+agregarPizza p            [] = []
+agregarPizza Prepizza     _  = [] 
+agregarPizza (Capa ing p) ys = (1 + agregarPizza p ys, Capa ing) : agregarPizza p ys

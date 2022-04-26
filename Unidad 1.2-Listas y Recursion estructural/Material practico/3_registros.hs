@@ -213,11 +213,18 @@ trabajaEn r p = proyectosSonIguales (proyectoDe r) p
 -----------------------------------------------------------------
 
 asignadosPorProyecto :: Empresa -> [(Proyecto, Int)]
-asignadosPorProyecto e = asignadosPorProyecto' (proyectos e)  e
+asignadosPorProyecto (ConsEmpresa rs) = asignadosPorProyecto' rs
 
-asignadosPorProyecto' :: [Proyecto] -> Empresa -> [(Proyecto, Int)]
-asignadosPorProyecto' []     _ = []
-asignadosPorProyecto' (p:ps) e = (p,cantDeEmpleadosEn p e) : asignadosPorProyecto' ps e
+asignadosPorProyecto' :: [Rol] -> [(Proyecto, Int)]
+asignadosPorProyecto' []     = []
+asignadosPorProyecto' (r:rs) = agregarAsignados r (asignadosPorProyecto' rs)
+
+
+agregarAsignados :: Rol -> [(Proyecto, Int)] -> [(Proyecto, Int)]
+agregarAsignados r []     = [ (proyectoDe r, 1) ]
+agregarAsignados r (x:xs) = if(proyectosSonIguales (proyectoDe r) (fst x))
+                                then (proyectoDe r, 1+snd x) : xs
+                                else x : agregarAsignados r xs 
 
 
 

@@ -64,11 +64,6 @@ toList EmptyT          = []
 toList (NodeT x t1 t2) = toList t1 ++ x:[] ++ toList t2
 
 -- 10
-levelN :: Int -> Tree a -> [a]
-levelN 0 (NodeT x _  _ ) = x:[]
-levelN n EmptyT          = []
-levelN n (NodeT x t1 t2) = levelN (n-1) t1 ++ levelN (n-1) t2 
-
 -- ASI ES COMO DEBE HACERSE SIGUIENDO LOS PASOS DE LA RECURSION
 levelN' :: Int -> Tree a -> [a]
 levelN' _ EmptyT          = []
@@ -132,14 +127,10 @@ eval (Neg   e1)    = -(eval e1)
 
 -- 2
 simplificar :: ExpA -> ExpA
--- a) 0 + x = x + 0 = x
 simplificar (Sum (Valor 0) exp)  = exp
 simplificar (Sum exp (Valor 0))  = exp
--- b) 0 * x = x * 0 = 0
 simplificar (Prod (Valor 0) exp) = Valor 0
 simplificar (Prod exp (Valor 0)) = Valor 0
--- c) 1 * x = x * 1 = x
 simplificar (Prod (Valor 1) exp) = exp
 simplificar (Prod exp (Valor 1)) = exp
--- d) - (- x) = x
 simplificar (Neg (Neg exp))      = exp
