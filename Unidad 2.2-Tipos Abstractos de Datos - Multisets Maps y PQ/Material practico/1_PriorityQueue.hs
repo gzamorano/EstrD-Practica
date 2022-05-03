@@ -1,0 +1,1 @@
+-- Ejercicio 2 con Heap como estructura auxiliar.
