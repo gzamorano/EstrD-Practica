@@ -1,1 +1,1 @@
--- Ejercicio 2 con Heap como estructura auxiliar.
+-- Ejercicio 2 con PQ como estructura auxiliar (como TAD auxiliar). ver el costo
