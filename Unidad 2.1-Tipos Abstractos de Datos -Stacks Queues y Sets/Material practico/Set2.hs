@@ -3,13 +3,10 @@ module Set2 (
     Set, emptyS, addS, belongS,
     sizeS, removeS, unionS, setToList
 )
-
 where
 
-
-data Set a = SS [a]  deriving Show
+data Set a = SS [a] 
           
-
 -- operaciones (ya se dan creadas)
 
 --Crea un conjunto vacío.
@@ -38,11 +35,11 @@ addS x (SS xs) = SS (x:xs)
 -- O(N) con N la cantidad de elementos de la lista
 belongS x (SS xs) = elem x xs
 
--- O(n+m) asumiendo que length es lineal, n es la cantidad de elementos de la lista
--- y m también
+-- O(N) asumiendo que length y sinREP tienen costo lineal, N es la cantidad de elementos de la lista
 sizeS (SS xs) = length (sinRep xs)
 
--- O(n) asumiendo que elem es lineal
+-- O(n) siendo n la cantidad de elementos de la lista, sobre la que se hace RE, 
+-- y asumiendo que elem es lineal
 sinRep :: Eq a => [a] -> [a]
 sinRep []     = []
 sinRep (x:xs) = 
@@ -51,13 +48,14 @@ sinRep (x:xs) =
     else x : sinRep xs
 
 
--- O(n) n es la cantidad de elementos de la lista (pueden haber repetidos) que conforma el conjunto
+-- O(N) N es la cantidad de elementos de la lista (pueden haber repetidos) que conforma el conjunto
 removeS x (SS xs) = 
   if elem x xs
     then SS (sacarTodos x xs)
     else SS xs
 
--- O(n) ver costo
+-- O(n) siendo n la cantidad de elementos de la lista, sobre la cual se hace RE, y asumiendo
+-- que la comparación es de costo constante
 sacarTodos :: Eq a => a -> [a] -> [a]
 sacarTodos x []     = []
 sacarTodos x (y:ys) = 
@@ -65,9 +63,10 @@ sacarTodos x (y:ys) =
       then sacarTodos x ys
       else y : sacarTodos x ys
 
--- O(N) revisar el costo
+-- O(s*a(N+M)) siendo N la cantidad de elementos del primer set, M la cantidad del segundo,
+-- 'a' el costo de append (lineal) y s el costo de sinRep (lineal)
 unionS (SS xs) (SS ys) = SS (sinRep (xs++ys))
 
 
--- O(n) revisar el costo
+-- O(N) siendo N la cantidad de elementos del set, y asumiendo que sinRep es de costo lineal.
 setToList (SS xs) = sinRep xs

@@ -1,3 +1,4 @@
+-- Implementación ejercicio 4.1
 module Map1 
  (Map, emptyM, assocM, lookupM, deleteM, keys)
 where 
@@ -22,7 +23,7 @@ keys :: Map k v -> [k]
 
 emptyM             = M []                  -- O(1)
 assocM k v (M kvs) = M (asociar k v kvs)   -- O(n)
-                  -- M ((k,v) : kvs)  -- ASÍ NO, porque puede violar el Invariante!!
+                  -- M ((k,v) : kvs)       ASÍ NO, porque puede violar el Invariante!!
 lookupM k  (M kvs) = buscar k kvs          -- O(n)
 deleteM k  (M kvs) = M (borrar k kvs)      -- O(n)
 keys       (M kvs) = claves kvs            -- O(n)
@@ -39,8 +40,8 @@ claves ((k,v):kvs) = k : claves kvs
 
 -- O(n)
 asociar :: Eq k => k -> v -> [(k,v)] -> [(k,v)]
-asociar k v []            = [ (k,v) ]
-asociar k v ((k',v'):kvs) = if k==k' then (k',v):kvs else (k', v') : asociar k v kvs
+asociar k v []            = [(k,v)]
+asociar k v ((k',v'):kvs) = if k==k' then (k',v):kvs else (k',v') : asociar k v kvs
 
 -- O(n)
 borrar :: Eq k => k -> [(k,v)] -> [(k,v)]

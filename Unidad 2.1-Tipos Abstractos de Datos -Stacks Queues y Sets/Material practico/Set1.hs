@@ -3,9 +3,7 @@ module Set1 (
     Set, emptyS, addS, belongS,
     sizeS, removeS, unionS, setToList
 )
-
 where
-
 
 type Cant = Int
 data Set a = S [a] Cant  deriving Show
@@ -18,9 +16,7 @@ data Set a = S [a] Cant  deriving Show
         * n representa la cantidad de elementos de xs 
 -}
 
-
 -- operaciones (ya se dan creadas)
-
 
 --Crea un conjunto vacío.
 emptyS :: Set a
@@ -38,7 +34,6 @@ unionS :: Eq a => Set a -> Set a -> Set a
 setToList :: Eq a => Set a -> [a]
 
 
-
 -- O(1)
 emptyS = S [] 0
 
@@ -48,50 +43,42 @@ addS x (S xs n) =
       then S xs n  
       else S (x:xs) (n+1)
 
--- agregar x []     = [..]
--- agregar x (y:ys) = 
---   if x == y
---     then y:ys  
---     else y:agregar x ys
-
-
 -- O(n) asumiendo que elem es lineal sobre la cantidad de elementos de la lista
 belongS x (S xs _) = elem x xs
 
 -- O(1) siendo n la cantidad de elementos de la lista, solo lo devuelve
 sizeS (S _ n) = n 
 
--- O(n+m) donde m es el tamaño de la lista y n también
+-- O(n) donde n es el tamaño de la lista, y asumiendo que elem es lineal
 removeS x (S xs n) = 
     if elem x xs
       then S (sacar x xs) (n-1)
       else (S xs n) 
 
--- O(n)
+-- O(n) con n la cantidad de elementos de la lista, asumiendo que == es constante
+sacar x []     = error "la lista no puede ser vacia"
 sacar x (y:ys) = 
     if x == y
       then ys
       else y : sacar x ys
 
--- O(n^2)  
+-- O(n^2)  asumiendo que union es de costo cuadrático
 unionS (S xs _) (S ys _) = 
   let zs = union xs ys
     in S zs (length zs)
   
-
--- O(n) asumiendo que agregar es lineal
+-- O(n^2) asumiendo que agregar es lineal
 union :: Eq a => [a] -> [a] -> [a]
 union []     ys = ys
 union (x:xs) ys = agregar x ys
 
--- O(n)
+-- O(n) n es la cantidad de elementos de la lista, sobre la que se hace RE, y
+-- asumiendo que la comparación es una operación de costo constante.
 agregar x []     = [x]
 agregar x (y:ys) =
   if x==y
     then y:ys
     else y:agregar x ys
-
-
 
 -- O(1) cualquier sea la cantidad de elementos de la lista, la devuelve sin operar sobre ella
 setToList (S xs _) = xs

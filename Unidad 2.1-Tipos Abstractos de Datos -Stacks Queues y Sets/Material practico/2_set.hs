@@ -4,11 +4,8 @@ import Set2
 
 data Tree a = EmptyT | NodeT a (Tree a) (Tree a)
 
-
-
 -- [1..1000] * {1..10} -> 100000 operaciones
 --losQuePertenecen (usa belongs)
-
 
 -- 2.2 Como usuario del tipo abstracto Set implementar las siguientes funciones:
 
@@ -38,7 +35,8 @@ listToSet :: Eq a => [a] -> Set a
 listToSet []     = emptyS
 listToSet (x:xs) = addS x (listToSet xs)
 
--- O()
+-- O(N) donde N es la cantidad de nodos del arbol y asumiendo que unionS es de costo lineal (imp Set2).
+-- O(N^2)  donde N es la cantidad de nodos del arbol y asumiendo que unionS es de costo cuadrático (imp Set1).
 --Dado un arbol de conjuntos devuelve un conjunto con la union de todos los conjuntos del arbol.
 unirTodos :: Eq a => Tree (Set a) -> Set a
 unirTodos EmptyT          = emptyS
@@ -53,7 +51,9 @@ treeS = NodeT mySet
                   (NodeT mySet2 EmptyT EmptyT)
 
 
-
+-- O(N) siendo N la cantidad de elementos de la lista, sobre la que se hace RE,
+-- y asumiendo que unionS es costo lineal (implementación Set2).
+-- O (N^2) asumiendo que unionS es cuadrática en costo (implementación Set1)
 -- funcion que creo yo
 agregarMuchos :: Eq a => [a] -> Set a -> Set a
 agregarMuchos []     s = s
