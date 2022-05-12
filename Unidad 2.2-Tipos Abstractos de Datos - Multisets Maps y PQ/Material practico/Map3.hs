@@ -20,8 +20,8 @@ assocM :: Eq k => k -> v -> Map k v -> Map k v
 lookupM :: Eq k => k -> Map k v -> Maybe v
 -- Propósito: borra una asociación dada una clave.
 deleteM :: Eq k => k -> Map k v -> Map k v
--- Propósito: devuelve las claves del map.
-keys :: Map k v -> [k]
+-- Propósito: devuelve las claves del map. (DISTINTAS)
+keys :: Eq k => Map k v -> [k]
 
 -- O(1)
 emptyM = M [] [] 
@@ -35,8 +35,8 @@ lookupM k (M ks vs) = buscar k ks vs
 -- O(n) siendo n el tamaño del map, asumiendo que borrarTodos y listToMap son de costo lineal.
 deleteM k (M ks vs) = listToMap (borrarTodos k ks vs)
 
--- O(1) solo devuelve la lista ks
-keys (M ks _) = ks            
+-- O(n^2) siendo n el tamaño del map y asumiendo que sinRep es de costo cuadrático.
+keys (M ks _) = sinRep ks            
 
 -- O(N) siendo N el tamaño de la lista de keys, sobre la que se hace RE, asumiendo que
 -- la comparación tiene costo constante.
@@ -60,6 +60,14 @@ borrarTodos k (k':ks) (v:vs) = if k==k'
 listToMap :: Eq k => [(k,v)] -> Map k v
 listToMap []          = emptyM
 listToMap ((k,v):kvs) = assocM k v (listToMap kvs)
+
+-- O(N^2) siendo N el tamaño de la lista de keys, y asumiendo que elem es lineal
+sinRep :: Eq k => [k] -> [k]
+sinRep []     = [] 
+sinRep (k:ks) =
+      if k `elem` ks
+            then sinRep ks
+            else k : sinRep ks
 
 
 unMap = assocM "a" 5

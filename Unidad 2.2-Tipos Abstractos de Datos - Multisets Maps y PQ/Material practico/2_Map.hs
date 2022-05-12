@@ -157,7 +157,7 @@ agregar :: a -> [(Int,a)] -> [(Int,a)]
 agregar x []       = [(0,x)]
 agregar x (nx:nxs) = (fst nx+1,snd nx) : agregar x nxs
 
-
+-- ==============================================================
 
 -- O(n^2) asumiendo que listToMap, contar son operaciones de costo cuadrático y se suceden
 -- una despúes de otra.
