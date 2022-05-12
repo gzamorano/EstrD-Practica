@@ -12,15 +12,18 @@ tree1 = NodeT 10 (NodeT 6
                      (NodeT 4 EmptyT EmptyT)) 
                    (NodeT 7 EmptyT EmptyT)) 
                  (NodeT 15 
-                     (NodeT 12 EmptyT EmptyT) EmptyT)
+                     (NodeT 12 EmptyT EmptyT) 
+                     (NodeT 16 EmptyT 
+                                (NodeT 17 EmptyT EmptyT)))
 
 {-
 
                     10
         6                       15       
-    3       7               12
-      4
-
+    3       7               12      16
+      4             
+                                        17
+  
 -}
 
 -- Las siguientes funciones reciben un árbol binario que cumple las invariantes de BST
@@ -100,7 +103,7 @@ borrarMaxBST (NodeT x ti td)     = NodeT x ti (borrarMaxBST td)
 -- =====================================================
 
 
--- O(N2)
+-- O(N^2)
 -- Propósito: indica si el árbol cumple con los invariantes de BST.
 esBST :: Ord a => Tree a -> Bool
 esBST EmptyT          = True
@@ -115,6 +118,43 @@ esMenorATodos :: Ord a => a -> Tree a -> Bool
 esMenorATodos x EmptyT          = True
 esMenorATodos x (NodeT y ti td) = x < y && esMenorATodos x ti && esMenorATodos x td
 
+-- =====================================================
+
+-- O(log N)
+-- Propósito: dado un BST y un elemento, devuelve el máximo elemento que sea menor al elemento dado.
+--revisar
+elMaximoMenorA :: Ord a => a -> Tree a -> Maybe a
+elMaximoMenorA x EmptyT              = Nothing
+elMaximoMenorA x (NodeT y _  EmptyT) = Just y
+elMaximoMenorA x (NodeT y EmptyT  _) = Just y
+elMaximoMenorA x (NodeT y ti td)     = 
+    if x<y
+        then elMaximoMenorA x ti
+        else elMaximoMenorA x td
+
+-- =====================================================
+
+-- O(log N)
+-- Propósito: dado un BST y un elemento, devuelve el mínimo elemento que sea mayor al elemento dado.
+elMinimoMayorA :: Ord a => a -> Tree a -> Maybe a
+elMinimoMayorA x t = undefined
 
 
+-- =====================================================
 
+-- Propósito: indica si el árbol está balanceado. Un árbol está balanceado cuando para cada
+-- nodo la diferencia de alturas entre el subarbol izquierdo y el derecho es menor o igual a 1.
+-- O(N^2)
+balanceado :: Tree a -> Bool
+balanceado EmptyT = True
+balanceado (NodeT x ti td) = estaBalanceado ti td  && balanceado ti && balanceado td
+
+
+estaBalanceado :: Tree a -> Tree a -> Bool
+estaBalanceado ti td = abs (heightT ti - heightT td) < 2
+
+
+heightT :: Tree a -> Int
+heightT EmptyT                  = 0
+heightT (NodeT _ EmptyT EmptyT) = 0
+heightT (NodeT _ t1     t2)     = 1 + (max (heightT t1)  (heightT t2))
