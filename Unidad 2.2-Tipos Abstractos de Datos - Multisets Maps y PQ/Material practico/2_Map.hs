@@ -96,27 +96,28 @@ agrupar (k,v) (kvs:kvss) =
 -----------------------------------------------------------------
 -----------------------------------------------------------------
 
--- O(l*a*m(n^2)) siendo l el costo de listToMap, a el costo de aumentarKeys, m costo de mapToList,
---        y n la cantidad de elementos del map.
+-- O(n) siendo n el tamaño de la lista de keys y asumiendo que incrementarKey es de costo lineal.
 -- 6. Propósito: dada una lista de claves de tipo k y un map que va de k a Int, le suma uno a
 --             cada número asociado con dichas claves.
 incrementar :: Eq k => [k] -> Map k Int -> Map k Int
-incrementar ks m = listToMap (aumentarKeys ks (mapToList m))
+incrementar []     m = m
+incrementar (k:ks) m = incrementarKey k (incrementar ks m)
 
--- O(N^2) siendo N la cantidad de elementos de la lista de keys, sobre la que se hace RE,
---       y asumiendo que aumentarK es lineal.
-aumentarKeys :: Eq k => [k] -> [ (k,Int) ] -> [ (k,Int) ]
-aumentarKeys []     kns = kns
-aumentarKeys (k:ks) kns = aumentarK k (aumentarKeys ks kns)
+-- O(n) siendo n el tamaño del map y asumiendo que elem, keys, assocM y cantKey son de costo
+-- lineal.
+incrementarKey :: Eq k => k -> Map k Int -> Map k Int
+incrementarKey k m = 
+      if k `elem` (keys m)
+            then assocM k ((cantKey k m)+1) m
+            else m
 
--- O(N) siendo N la cantidad de elementos de la segunda lista, sobre la que se hace RE,
---     asumiendo que la comparación es operación costo constante.
-aumentarK :: Eq k => k -> [ (k,Int) ] -> [ (k,Int) ]
-aumentarK k []       = []
-aumentarK k (kn:kns) = 
-      if k==(fst kn)
-        then (fst kn, 1+snd kn) : kns
-        else kn : aumentarK k kns
+-- O(n) siendo n el tamaño del map, y asumiendo que lookupM es de costo lineal 
+cantKey :: Eq k => k -> Map k Int -> Int
+cantKey k m = case lookupM k m of
+                  (Just n) -> n
+                  Nothing  -> 0 
+
+
 
 -----------------------------------------------------------------
 -----------------------------------------------------------------
@@ -157,25 +158,31 @@ agregar :: a -> [(Int,a)] -> [(Int,a)]
 agregar x []       = [(0,x)]
 agregar x (nx:nxs) = (fst nx+1,snd nx) : agregar x nxs
 
+
+
+
 -- ==============================================================
 
--- O(n^2) asumiendo que listToMap, contar son operaciones de costo cuadrático y se suceden
--- una despúes de otra.
+-- O(n) siendo n el tamaño del string, y asumiendo que contar es de costo lineal.
 --Propósito: dado un string, devuelve un map donde las claves son los caracteres que aparecen
 --en el string, y los valores la cantidad de veces que aparecen en el mismo.
 ocurrencias :: String -> Map Char Int
-ocurrencias cs = listToMap (contar cs) 
+ocurrencias cs = contar cs
 
--- O(N^2) siendo N el tamaño de la lista de caracteres, sobre la que se hace RE, y asumiendo
--- que consolidar es de costo lineal.
-contar :: Eq c => [c] -> [(c,Int)]
-contar []     = []
-contar (c:cs) = consolidar c (contar cs) 
+-- O(n) siendo n el tamaño del string, sobre el que se realiza RE, y asumiendo que consolidar 
+-- es de costo lineal.
+contar :: String -> Map Char Int
+contar []     = emptyM
+contar (c:cs) = consolidar c (contar cs)
 
--- O(N) siendo N el tamaño de la lista de pares, sobre la que se hace RE, y asumiendo que
--- la comparación es una op. costo constante.
-consolidar :: Eq c => c -> [(c,Int)] -> [(c,Int)]
-consolidar c []       = [(c,1)]
-consolidar c (cn:cns) = if c==fst cn
-                          then (c,1+snd cn) : cns
-                          else cn:consolidar c cns
+-- O(n) siendo n el tamaño del map, asumiendo que assocM y ocurrenciasDe son de costo lineal, y se suceden
+-- una después de otra.
+consolidar :: Char -> Map Char Int -> Map Char Int
+consolidar c m = assocM c ((ocurrenciasDe c m)+1) m
+
+--O(n) siendo n el tamaño del map, asumiendo que lookupM es de costo lineal.
+ocurrenciasDe :: Char -> Map Char Int -> Int
+ocurrenciasDe c m = case (lookupM c m) of 
+                              (Just n) -> n
+                              Nothing  -> 0
+ 

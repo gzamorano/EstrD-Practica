@@ -1,6 +1,6 @@
 -- Ejercicio 6.1 Implementación de MultiSet
 module MultiSet1
- (MultiSet, addMS, ocurrencesMS, unionMS, intersectionMS, multiSetToList)
+ (MultiSet, emptyMS, addMS, ocurrencesMS, unionMS, intersectionMS, multiSetToList)
 where
 
 import Map1
@@ -34,74 +34,55 @@ multiSetToList :: Ord a => MultiSet a -> [(a, Int)]
 -- O(1) asumiendo que emptyM es de costo constante.
 emptyMS = MS emptyM
 
--- O(n^2) donde en es el tamaño del multiset y asumiendo que agregar es cuadrática.
+-- ==================================================================
+
+-- O(n) donde en es el tamaño del multiset y asumiendo que agregar es de costo lineal.
 addMS x (MS m) = MS (agregar x m)
 
--- O(n^2) donde n es el tamaño del map, asumiendo que listToMap y mapToList son operaciones cuadráticas.
+-- O(n) donde n es el tamaño del map, asumiendo que cantKey es de costo lineal.
 agregar :: Eq a => a -> Map a Int -> Map a Int
-agregar x m = if x `elem` (keys m)
-                then listToMap (aumentar x (mapToList m))
-                else assocM x 1 m
+agregar x m = assocM x ((cantKey x m)+1) m
+
+-- ==================================================================
+
+-- O(n) donde n es el tamaño del MultiSet, asumiendo que la op. cantKey es de costo lineal.
+ocurrencesMS x (MS m)= cantKey x m
+
+-- ==================================================================
+
+-- O(n^2) donde n es el tamaño de los multisets y asumiendo que mapToList es de costo cuadrático.
+unionMS (MS m1) (MS m2) = MS (unionM (mapToList m1) m2)  
+
+-- O(n) siendo n el tamaño de la lista clave-valor, y asumiendo que agregarOcurrencias es
+-- de costo lineal.
+unionM :: Eq k => [(k,Int)] -> Map k Int -> Map k Int
+unionM []          m = m
+unionM ((k,n):kvs) m = agregarOcurrencias (k,n) (unionM kvs m)
+
+-- O(n) siendo n el tamaño del map, y asumiendo que assocM y cantKey son de orden lineal.
+agregarOcurrencias :: Eq k => (k,Int) -> Map k Int -> Map k Int
+agregarOcurrencias (k,n) m = assocM k ((cantKey k m)+n) m
 
 
--- O(n) donde n es el tamaño del MultiSet, asumiendo que la op. lookupM es lineal.
-ocurrencesMS x (MS m)= case (lookupM x m) of
-                        (Just x) -> x
-                        Nothing  -> 0
-
--- Si encuentro un elemento en comun entre MS's entonces hay que sumar las ocurrencias.
--- los que no tienen en común, solo se agregan al res. final sin sumar nada.
--- O(n^2) donde n es el tamaño de los multisets y asumiendo que unionM es de costo cuadrático. 
-unionMS (MS m1) (MS m2) = MS (unionM m1 m2)  
-
--- O(n^2) donde n es el tamaño del map, y asumiendo que listToMap y mapToList son de costo
--- cuadrático. 
-unionM :: Eq a => Map a Int -> Map a Int -> Map a Int
-unionM m1 m2 = listToMap (union (mapToList m1) (mapToList m2))
-
---O(N^2) donde N es el tamaño de la lista de pares, sobre la que se hace RE, y asumiendo que
--- (pertenece) es de costo lineal.
-union :: Eq k => [ (k,Int) ] -> [ (k,Int) ] -> [ (k,Int) ]
-union []           kns' = kns'
-union ((k,n):kns)  kns' = 
-      if k `pertenece` kns'
-            then agregarOcurrencias (k,n) (union kns kns')
-            else (k,n) : union kns kns' 
-
--- O(N) donde N es el tamaño de la lista de pares, sobre la que se hace RE.
-pertenece :: Eq k => k -> [(k,Int)] -> Bool
-pertenece k []           = False
-pertenece k ((k',n):kns) = k==k' || pertenece k kns 
-
--- O(N) donde N es el tamaño de la lista de pares, sobre la que se hace RE.
-agregarOcurrencias :: Eq k => (k,Int) -> [(k,Int)] -> [(k,Int)]
-agregarOcurrencias (k,n) []            = [(k,n)]
-agregarOcurrencias (k,n) ((k',n'):kns) = 
-      if k==k'
-            then (k',n+n') : kns
-            else (k',n') : agregarOcurrencias (k,n) kns
-
-
+-- ==================================================================
 
 -- Si encuentro un elemento en comun entre MS's entonces hay que sumar las ocurrencias.
--- los que no tienen en común, NO se agregan al resultado final.
+-- los que no tienen en común, NO se agregan al resultado final. REVISAR
 -- O()
-intersectionMS (MS m1) (MS m2) = undefined
-      --MS (interseccionM m1 m2)
+intersectionMS (MS m1) (MS m2) = MS (interseccionM (mapToList m1) m2)
 
---interseccionM :: Eq k => Map k Int -> Map k Int -> Map k Int
--- m1 m2 = listToMap( interseccion (mapToList m1) (mapToList m2) )
-
---REVISAR
-interseccion :: Eq k => [(k,Int)] -> [(k,Int)] -> [(k,Int)]
-interseccion []          _    = [] 
-interseccion _           []   = []
-interseccion ((k,n):kns) kns' =
-      if k `pertenece` kns'
-            then agregarOcurrencias (k,n) (interseccion kns kns')
-            else interseccion kns kns'
+-- O(n) siendo n el tamaño de la lista clave-valor, y asumiendo que agregarOcurrencias es
+-- de costo lineal.
+interseccionM :: Eq k => [(k,Int)] -> Map k Int -> Map k Int
+interseccionM []          m = []
+interseccionM ((k,n):kvs) m = 
+      if k `elem` (keys m)
+            then agregarOcurrencias (k,n) (interseccionM kvs m)
+            else interseccionM kvs m
+      
 
 
+-- ==================================================================
 
 -- O(n^2) siendo n el tamaño del multiset y asumiendo que mapToList es de costo cuadrático. 
 multiSetToList (MS m) = mapToList m 
@@ -138,17 +119,14 @@ valuesM m = valores (keys m) m
 valores :: Eq k => [k] -> Map k v -> [Maybe v]
 valores []     m = []
 valores (k:ks) m = lookupM k m : valores ks m
-                        
 
 
--- O(N) siendo N la cantidad de elementos de la segunda lista, sobre la que se hace RE,
---     asumiendo que la comparación es operación costo constante.
-aumentar :: Eq k => k -> [ (k,Int) ] -> [ (k,Int) ]
-aumentar k []       = []
-aumentar k (kn:kns) = 
-      if k==(fst kn)
-        then (fst kn, 1+snd kn) : kns
-        else kn : aumentar k kns
+-- O(n) siendo n el tamaño del map, y asumiendo que lookupM es de costo lineal 
+cantKey :: Eq k => k -> Map k Int -> Int
+cantKey k m = case lookupM k m of
+                  (Just n) -> n
+                  Nothing  -> 0 
+
 
 
 -- O(N^2) siendo N la cantidad de pares de la lista, sobre la que se hace RE,
@@ -183,7 +161,4 @@ unir (kv:kvs) m = assocM (fst kv) (snd kv) (unir kvs m)
 
 
 
-
--- Ejercicio 6.2 Reimplementación de ocurrencias, el resultado será un multiconjunto de
--- caracteres.
 
