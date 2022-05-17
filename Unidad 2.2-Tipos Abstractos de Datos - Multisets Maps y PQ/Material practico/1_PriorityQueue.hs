@@ -3,7 +3,7 @@ import PriorityQueue1
 
 -- O(N^2) donde N es la cantidad de elementos de la lista, y asumiendo que listToPQ es de costo
 --      cuadrático, al igual que pqToList.
--- Propósito: dada una lista la ordena de menor a mayor utilizando una Heap como estructura auxiliar.
+-- Propósito: dada una lista la ordena de menor a mayor utilizando una PQ como estructura auxiliar.
 pqSort :: Ord a => [a] -> [a] 
 pqSort xs = pqToList (listToPQ xs)
 
