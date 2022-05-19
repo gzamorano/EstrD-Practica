@@ -32,6 +32,8 @@ búsqueda y borrado, tal cual vimos en clase.
 El tipo abstracto Map ya me asegura que no van a haber Cuils repetidos. Lo mismo sucede
 con los sectores, no van a haber repetidos y en un mismo sector no existiran dos empleados
 iguales, ya que esto lo garantiza el tipo abstracto Set.
+
+AGREGAR INVARIANTE DE CUIL
 -}
 
 
@@ -106,31 +108,51 @@ agregarSectorM sId sects = assocM sId emptyS sects
 
 -- =================================================================
 
+-- PENSARLO COMO: ACTUALIZAR EMPLEADOS EN EL MAP DE LOS SECTORES CON SET EMPLEADO. Y TRATAR DE 
+-- REFACTORIZAR.
+
 -- Propósito: agrega un empleado a la empresa, en el que trabajará en dichos sectores y tendrá el CUIL dado.
 -- Costo: calcular
 agregarEmpleado :: [SectorId] -> CUIL -> Empresa -> Empresa
 agregarEmpleado sIds cuil (ConsE sects empls) =  
-    let nuevoEmpleado = empleadoCon sIds CUIL  
-        in ...aca construyo la empresa
+    let nuevoEmpleado = empleadoCon sIds cuil  
+        in ConsE (agregarEmplEnSectores nuevoEmpleado sIds sects) (assocM cuil nuevoEmpleado empls)
 
+-- Costo:
 empleadoCon :: [SectorId] -> CUIL -> Empleado
 empleadoCon sIds cuil = agregarSectores sIds (consEmpleado cuil)
 
-
+-- Costo: 
 agregarSectores :: [SectorId]  -> Empleado -> Empleado
-agregarSectores = undefined
+agregarSectores []         empl = empl
+agregarSectores (sId:sIds) empl = agregarSector sId (agregarSectores sIds empl)   
 
-{-
-EMPRESA
+-- Costo:
+agregarEmplEnSectores :: Empleado -> [SectorId] -> Map SectorId (Set Empleado) -> Map SectorId (Set Empleado)
+agregarEmplEnSectores empl []         sects = sects
+agregarEmplEnSectores empl (sId:sIds) sects = 
+    agregarEmplEnSector empl sId (agregarEmplEnSectores empl sIds sects)
 
-RRHH: rober,juan
-DEV: mati,juli
-
-222: rober
-333: juan
-444: mati
-555: juli
-
+-- Costo:
+agregarEmplEnSector :: Empleado -> SectorId -> Map SectorId (Set Empleado) -> Map SectorId (Set Empleado)
+agregarEmplEnSector empl sId sects = assocM sId (case (lookupM sId sects) of 
+                                                    (Just empleados) -> addS empl empleados
+                                                    Nothing          -> error "no se cumple precondicion") 
+                                                (deleteM sId sects)
 
 
--}
+-- =================================================================
+
+-- Propósito: agrega un sector al empleado con dicho CUIL.
+-- Costo: calcular.
+agregarASector :: SectorId -> CUIL -> Empresa -> Empresa
+agregarASector sId cuil (ConsE sects empls) = 
+    ConsE () (agregarSectorA sId cuil empls)
+
+agregarSectorA :: SectorId -> CUIL -> Map CUIL Empleado -> Map CUIL Empleado
+agregarSectorA sId cuil empls = assocM cuil (emplConNuevoSector cuil sId empls) (deleteM cuil empls)
+ 
+
+
+
+
