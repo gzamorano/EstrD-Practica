@@ -3,8 +3,8 @@ module Empresa
     (consEmpresa)
 where
 
-import Map
-import Set
+import Map1
+import Set1
 import Empleado
 
 
@@ -16,8 +16,10 @@ data Empresa = ConsE (Map SectorId (Set Empleado))
 
 {-
     INV.REP.: en ConsE sects empls
-    * en sects y empls no existen claves repetidas
-    * ?
+    * En empls, la clave CUIL de cada empleado debe tener 11 dígitos, y no puede ser número
+      negativo.
+    * Cada Empleado que exista en el conjunto de una clave en sects debe conservar los mismos 
+      sectores que en empls. 
 -}
 
 
@@ -33,10 +35,35 @@ El tipo abstracto Map ya me asegura que no van a haber Cuils repetidos. Lo mismo
 con los sectores, no van a haber repetidos y en un mismo sector no existiran dos empleados
 iguales, ya que esto lo garantiza el tipo abstracto Set.
 
-AGREGAR INVARIANTE DE CUIL
+
 -}
 
+instance Show Empresa where 
+    show (ConsE sects empls) = "Sectores: \n" ++ 
+                                showSects (keys sects) sects 
+                                ++ 
+                                "\nEmpleados: \n" ++
+                                showEmpls (keys empls) empls
 
+       where showSects []     _     = ""
+             showSects (n:ns) sects = showSect n sects ++ "\n" ++ showSects ns sects
+             showSect n sects       = "   " ++ show n ++ " -> " ++ show (empleadosDelSectorM n sects)
+
+             showEmpls []     _     = ""
+             showEmpls (n:ns) empls = showEmpl n empls ++ "\n" ++ showEmpls ns empls
+             showEmpl n empls = "   -" ++ show (case (lookupM n empls) of 
+                                                                (Just x) -> x)  
+                                                                
+
+
+miEmpresa = agregarEmpleado [11] 555
+          $ agregarEmpleado [10] 204310
+          $ agregarEmpleado [10,11] 20421
+          $ agregarEmpleado [09] 998
+          $ agregarSector 10
+          $ agregarSector 11
+          $ agregarSector 09
+          $ consEmpresa
 
 -- Propósito: construye una empresa vacía.
 -- Costo: O(1)
@@ -67,13 +94,13 @@ empleadosDelSectorM :: SectorId -> Map SectorId (Set Empleado) -> [Empleado]
 empleadosDelSectorM sId sects =  
     let empleados = lookupM sId sects
         in  case empleados of
-                (Just x) -> empleados x
+                (Just x) -> empleadosS x
                 Nothing  -> [] 
 
 -- Costo: O(E) siendo E la cantidad de empleados, y asumiendo que setToList tiene costo
 -- lineal.
-empleados :: Set Empleado -> [Empleado]
-empleados empls = setToList empls
+empleadosS :: Set Empleado -> [Empleado]
+empleadosS empls = setToList empls
 
 -- =================================================================
 
@@ -108,51 +135,83 @@ agregarSectorM sId sects = assocM sId emptyS sects
 
 -- =================================================================
 
--- PENSARLO COMO: ACTUALIZAR EMPLEADOS EN EL MAP DE LOS SECTORES CON SET EMPLEADO. Y TRATAR DE 
--- REFACTORIZAR.
-
 -- Propósito: agrega un empleado a la empresa, en el que trabajará en dichos sectores y tendrá el CUIL dado.
--- Costo: calcular
+-- Costo: O(S logS + logE) 
 agregarEmpleado :: [SectorId] -> CUIL -> Empresa -> Empresa
 agregarEmpleado sIds cuil (ConsE sects empls) =  
     let nuevoEmpleado = empleadoCon sIds cuil  
-        in ConsE (agregarEmplEnSectores nuevoEmpleado sIds sects) (assocM cuil nuevoEmpleado empls)
+        in ConsE (agregarEmplEnSectores nuevoEmpleado sIds sects) 
+                 (assocM cuil nuevoEmpleado empls)
 
--- Costo:
+-- Costo: O(S logS) asumiendo que S es el tamaño de la lista de id sectores, y asumiendo
+-- que la op. agregarSectores es de costo S logS.
 empleadoCon :: [SectorId] -> CUIL -> Empleado
 empleadoCon sIds cuil = agregarSectores sIds (consEmpleado cuil)
 
--- Costo: 
+-- Costo: O(S logS) en cada instancia de la recursión sobre la lista de id sectores se
+-- realiza una operación de costo logS -incorporarSector-
 agregarSectores :: [SectorId]  -> Empleado -> Empleado
 agregarSectores []         empl = empl
-agregarSectores (sId:sIds) empl = agregarSector sId (agregarSectores sIds empl)   
+agregarSectores (sId:sIds) empl = incorporarSector sId (agregarSectores sIds empl)   
 
--- Costo:
+-- Costo: O(logS + E)
 agregarEmplEnSectores :: Empleado -> [SectorId] -> Map SectorId (Set Empleado) -> Map SectorId (Set Empleado)
 agregarEmplEnSectores empl []         sects = sects
 agregarEmplEnSectores empl (sId:sIds) sects = 
     agregarEmplEnSector empl sId (agregarEmplEnSectores empl sIds sects)
 
--- Costo:
+-- Costo: O(logS + E)
 agregarEmplEnSector :: Empleado -> SectorId -> Map SectorId (Set Empleado) -> Map SectorId (Set Empleado)
-agregarEmplEnSector empl sId sects = assocM sId (case (lookupM sId sects) of 
-                                                    (Just empleados) -> addS empl empleados
-                                                    Nothing          -> error "no se cumple precondicion") 
-                                                (deleteM sId sects)
+agregarEmplEnSector empl sId sects = 
+    assocM sId (empleadosDelSectorActualizado empl sId sects) sects
+
+-- Costo: O(logS + E) 
+empleadosDelSectorActualizado :: Empleado -> SectorId -> Map SectorId (Set Empleado) -> Set Empleado
+empleadosDelSectorActualizado empl sId sects = 
+    (case (lookupM sId sects) of 
+                (Just empleados) -> addS empl empleados
+                Nothing          -> error "no existe el sector en la empresa") 
+
+
 
 
 -- =================================================================
 
 -- Propósito: agrega un sector al empleado con dicho CUIL.
--- Costo: calcular.
+-- Costo: O()
 agregarASector :: SectorId -> CUIL -> Empresa -> Empresa
 agregarASector sId cuil (ConsE sects empls) = 
-    ConsE () (agregarSectorA sId cuil empls)
+    let empl = buscarPorCUIL cuil (ConsE sects empls)
+        in
+        let empleadoActualizado = buscarPorCUIL cuil (ConsE sects (actualizarEmpleado sId empl empls))
+            in ConsE (agregarEmplEnSector empleadoActualizado sId sects)
+                     (actualizarEmpleado sId empl empls)
 
-agregarSectorA :: SectorId -> CUIL -> Map CUIL Empleado -> Map CUIL Empleado
-agregarSectorA sId cuil empls = assocM cuil (emplConNuevoSector cuil sId empls) (deleteM cuil empls)
+
+
+-- Costo: O(logE + S)
+actualizarEmpleado :: SectorId -> Empleado -> Map CUIL Empleado -> Map CUIL Empleado
+actualizarEmpleado sId empl empls = 
+    assocM (cuil empl) (incorporarSector sId empl) empls 
  
+-- =================================================================
 
+-- Propósito: elimina al empleado que posee dicho CUIL.
+-- Costo: O(log E + S logS), asumiendo que la op. buscarPorCUIL es de costo log E y,
+-- removerEmplM es de costo S logS
+borrarEmpleado :: CUIL -> Empresa -> Empresa
+borrarEmpleado cuil (ConsE sects empls) = 
+    let empleadoABorrar = buscarPorCUIL cuil (ConsE sects empls)
+          in ConsE (removerEmplM empleadoABorrar (sectores empleadoABorrar) sects)
+                   (deleteM cuil empls)
 
+-- Costo: O(S logS + log E) recursión sobre la lista de sectores donde aparece el empleado a borrar, en donde en 
+-- cada instancia se realiza assocM de costo logS y removerEmplS con costo log E.
+removerEmplM :: Empleado -> [SectorId] -> Map SectorId (Set Empleado) -> Map SectorId (Set Empleado)
+removerEmplM empl []         sects  = sects
+removerEmplM empl (sId:sIds) sects  = assocM sId (removerEmplS empl (case (lookupM sId sects) of (Just empls) -> empls)) 
+                                                 (removerEmplM empl sIds sects)
 
-
+-- Costo: O(log E)
+removerEmplS :: Empleado -> Set Empleado -> Set Empleado
+removerEmplS empl empls = removeS empl empls

@@ -127,10 +127,26 @@ eval (Neg   e1)    = -(eval e1)
 
 -- 2
 simplificar :: ExpA -> ExpA
-simplificar (Sum (Valor 0) exp)  = exp
-simplificar (Sum exp (Valor 0))  = exp
-simplificar (Prod (Valor 0) exp) = Valor 0
-simplificar (Prod exp (Valor 0)) = Valor 0
-simplificar (Prod (Valor 1) exp) = exp
-simplificar (Prod exp (Valor 1)) = exp
-simplificar (Neg (Neg exp))      = exp
+simplificar (Valor n)    = Valor n
+simplificar (Sum e1 e2)  = mkSumSim (simplificar e1) (simplificar e2)
+simplificar (Prod e1 e2) = mkProdSim (simplificar e1) (simplificar e2)
+simplificar (Neg e)      = mkNegSim (simplificar e)
+
+mkSumSim :: ExpA -> ExpA -> ExpA
+mkSumSim (Valor 0) e = e
+mkSumSim e (Valor 0) = e
+mkSumSim e1 e2       = Sum e1 e2
+
+mkProdSim :: ExpA -> ExpA -> ExpA
+mkProdSim (Valor 0) e = Valor 0
+mkProdSim e (Valor 0) = Valor 0
+mkProdSim (Valor 1) e = e
+mkProdSim e (Valor 1) = e
+mkProdSim e1 e2       = Prod e1 e2
+
+mkNegSim :: ExpA -> ExpA
+mkNegSim (Neg e) = e
+mkNegSim e       = Neg e
+
+
+
