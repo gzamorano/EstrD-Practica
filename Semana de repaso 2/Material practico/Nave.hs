@@ -6,12 +6,22 @@ data Nave = N (Map SectorId Sector) (Map Nombre Tripulante) (MaxHeap Tripulante)
 {- 
     INV. REP.: 
     * El segundo map y el MaxHeap tienen que tener los mismos tripulantes;
-      eso implica que no solo tengan el mismo nombre sino tambien los mismos sectores asignados
-      en la nave.
+      eso implica que no solo tengan el mismo nombre sino tambien los mismos identificadores de sectores asignados.
     * Ningun tripulante puede tener asignado un id de sector que no pertenezca a la nave, es decir, que
       no exista en el primer map.
     * Por cada sector que tenga asignado un tripulante, ya sea en el segundo Map o en la MaxHeap, 
       su nombre tiene que pertenecer en los tripulantes de dicho sector dentro del primer Map.
+-}
+
+{-
+los de clase: 
+en N ms mt h
+- mt y h tiene los mismos elementos.
+- para toda asociacion n -> t, para todo id E sectores t, para el s asociado a id en ms, vale 
+  n E tripulantes s.
+- para toda asociacion id -> s, para todo n E tripulantes s, sea n -> t, vale id e sectores t.
+- para toda asociacion id -> s, sectorId s == id.
+- para toda asociacion n -> t, nombre t == n.
 -}
 
 -- Implementación
@@ -70,8 +80,55 @@ datosDeSector sId (N sectores _ _) =
 -- ===========================================
 -- f) 
 
--- Eficiencia: O(log T) el costo a mi me queda T. ya que se asume que la op. setToList es de costo
+-- Costo: O(log T) el costo a mi me queda T. ya que se asume que la op. setToList es de costo
 -- T.
 tripulantesN :: Nave -> [Tripulante]
 -- Propósito: Devuelve la lista de tripulantes ordenada por rango, de mayor a menor.
 tripulantesN (Nave _ _ tripH) = setToList tripH
+
+
+-- ===========================================
+-- g) 
+
+-- Costo: O(C + log S), siendo C la cantidad de componentes dados.
+agregarASector :: [Componente] -> SectorId -> Nave -> Nave
+-- Propósito: Asigna una lista de componentes a un sector de la nave.
+agregarASector cs sId (N sectores tripM tripH) = N (agregarASectorM cs sId sectores) tripM tripH
+
+
+-- Costo: O(C + log S) asumiendo que la op. agregarASectorS es de costo lineal, lookupM y assocM
+-- tienen costo log S.
+agregarASectorM :: [Componente] -> SectorId -> Map SectorId Sector -> Map SectorId Sector
+agregarASectorM cs sId sectores = 
+  case (lookupM sId sectores) of 
+    (Just sector) -> assocM sId (agregarASectorS cs sector) sectores
+    Nothing       -> error "No existe sector"
+
+
+-- Costo: O(C) asumiendo que agregarC es de costo constante y se realiza tal operación en cada
+-- instancia de la recursión.
+agregarASectorS :: [Componente] ->  Sector -> Sector
+agregarASectorS []     s = s
+agregarASectorS (c:cs) s = agregarC c (agregarASectorS cs s)
+
+
+-- ===========================================
+-- h)
+
+-- Costo: O(log S + log T + T log T)
+asignarASector :: Nombre -> SectorId -> Nave -> Nave
+-- Propósito: Asigna un sector a un tripulante.
+-- Nota: No importa si el tripulante ya tiene asignado dicho sector.
+-- Precondición: El tripulante y el sector existen.
+asignarASector nom sId (N sectores tripM tripH) = 
+  N () () ()
+
+
+-- =======================================================
+-- Implementación de funciones como usuario del tipo Nave.
+-- =======================================================
+
+-- ===========================================
+-- i)
+
+
