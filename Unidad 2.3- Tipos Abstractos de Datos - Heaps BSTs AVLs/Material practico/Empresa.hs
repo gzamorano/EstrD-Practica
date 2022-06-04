@@ -15,11 +15,11 @@ data Empresa = ConsE (Map SectorId (Set Empleado))
                      (Map CUIL Empleado)
 
 {-
-    INV.REP.: en ConsE sects empls
-    * En empls, la clave CUIL de cada empleado debe tener 11 dígitos, y no puede ser número
-      negativo.
-    * Cada Empleado que exista en el conjunto de una clave en sects debe conservar los mismos 
-      sectores que en empls. 
+    INV.REP.: en ConsE ms me
+    * Para toda asociacion n -> e en me, n es un número positivo de 11 dígitos.
+    * Para todo sId que esté asignado a un e en me, ese sId en ms tiene en su conjunto de empleados a e.
+                                                  | vale e pertenece a (empleadosDelSector sId).
+    * Para toda asociación sId -> se en ms, para todo e de se, sId pertenece a los sectores asignados de e en me.
 -}
 
 

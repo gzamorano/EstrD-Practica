@@ -70,7 +70,7 @@ unionS (S xs _) (S ys _) =
 -- O(n^2) asumiendo que agregar es lineal
 union :: Eq a => [a] -> [a] -> [a]
 union []     ys = ys
-union (x:xs) ys = agregar x ys
+union (x:xs) ys = agregar x ys : union xs ys 
 
 -- O(n) n es la cantidad de elementos de la lista, sobre la que se hace RE, y
 -- asumiendo que la comparación es una operación de costo constante.
