@@ -58,13 +58,7 @@ void desdeCeroHastaN(int n) {
 
 // Recursiva
 void desdeCeroHastaNR(int n) {
-    /*if(n == 0) {
-        cout << 0 << endl;
-    }
-    else {
-        cout << n-n+1 << endl;
-        desdeCeroHastaNR(n-1);
-    }*/
+    
 }
 
 
@@ -101,22 +95,17 @@ void primerosN(int n, string s) {
 
 // Recursiva
 void primerosNR(int n, string s) {
-    if (n == 0) {
-        cout << s[n] << endl;
-    } 
-    else {
-        cout << s[n] << endl;
-        primerosNR(n-1, s);
-    }
+    // if (n > 0) {
+        
+    // } 
+
 }
-
-
 // 6. Propósito: indica si un char c aparece en el string s.
 
 // Propósito: devuelve la longitud del string dado
 int longitud(string s) {
     int i = 0;
-    while(s[i] != 0) { // 0 es sinonimo de NULL que se representa con todos los bits en cero(bajo nivel) 
+    while(s[i] != '\0') { // 0 es sinonimo de NULL que se representa con todos los bits en cero(bajo nivel) 
         i++;           // en la celda en memoria, y señala el fin de un string.
     }
     return i;
@@ -136,9 +125,12 @@ bool pertenece(char c, string s) {
 
 
 // Recursiva
-//bool pertenece(char c, string s) {
- 
-//}
+bool perteneceR(char c, string s) {
+    if(longitud(s) != 1) {
+        return (c == s[0]);
+    } 
+    return (c == s[longitud(s)]) && perteneceR (c, s.substr(0,longitud(s)-1));
+}
 
 
 // 7. Propósito: devuelve la cantidad de apariciones de un char c en el string s.
@@ -155,16 +147,26 @@ int apariciones(char c, string s) {
     return n;
 }
 
+int delta(bool b) {
+    if(b){return 1;}
+    return 0;
+} 
 
 // Recursiva
-//int aparicionesR(char c, string s) {
-  
-//}
+int aparicionesR(char c, string s) {
+    if (s.length() == 0) {
+        return 0;
+    } 
+    return (delta(c == s[s.length()-1]) 
+            + aparicionesR(c, s.substr(0,s.length()-1)));
+}
 
 
 
 
 
 int main () { 
-    primerosNR(2,"timeline");
+    string s = "caracolococo";
+
+    cout << aparicionesR('c',s) << endl;
 }
