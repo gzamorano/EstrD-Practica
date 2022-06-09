@@ -2,34 +2,40 @@
 #include "Pokemon.h"
 using namespace std;
 
+struct PokeSt {
+    TipoDePokemon tipo;
+    int vida;
+};
+
 Pokemon consPokemon(TipoDePokemon tipo) {
-    PokemonSt* p = new PokemonSt;
+    Pokemon p = new PokeSt;
     (*p).tipo = tipo;
     (*p).vida = 100;
     return p;
 }
 
-tipo tipoDePokemon(Pokemon p) {
+TipoDePokemon tipoDePokemon(Pokemon p) {
     return (*p).tipo;
 }
-
 
 int energia(Pokemon p) {
     return (*p).vida;
 }
 
-void perderEnergia(int energia, Pokemon p) {
-    (*p).vida = energia(p) - energia;
+void perderEnergia(int energiaAPerder, Pokemon p) {
+    (*p).vida -= energiaAPerder;
 }
 
+// Esta es una función auxiliar que no estaría incluida en la interfaz del TAD, por ende
+// no la voy a poder usar fuera de este archivo.
 bool esDeTipo(Pokemon p, TipoDePokemon tipo) {
     return ((*p).tipo == tipo);
 }
 
 bool superaA(Pokemon p1, Pokemon p2) {
-    bool casoGanador1 = esDeTipo(p1, 'agua') && esDeTipo(p2, 'fuego');
-    bool casoGanador2 = esDeTipo(p1, 'fuego') && esDeTipo(p2, 'planta');
-    bool casoGanador3 = esDeTipo(p1, 'planta') && esDeTipo(p2, 'agua');
+    bool casoGanador1 = esDeTipo(p1, "Agua") && esDeTipo(p2, "Fuego");
+    bool casoGanador2 = esDeTipo(p1, "Fuego") && esDeTipo(p2, "Planta");
+    bool casoGanador3 = esDeTipo(p1, "Planta") && esDeTipo(p2, "Agua");
 
     return (casoGanador1 || casoGanador2 || casoGanador3);
 }
