@@ -96,7 +96,9 @@ int main() {
    
     cout << "El minimo de al2: " << minimo(al2) << endl;
 
-    // for(int i=0; i<lengthAL(al); i++) {
-    //     cout << "AL[" << i << "]: "  << get(i,al) << endl;
-    // }
+
+    remove(al);
+    for(int i=0; i<lengthAL(al); i++) {
+        cout << "AL[" << i << "]: "  << get(i,al) << endl;
+    }
 }

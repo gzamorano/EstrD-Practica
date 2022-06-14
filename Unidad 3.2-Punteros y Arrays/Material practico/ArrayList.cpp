@@ -40,13 +40,13 @@ void set(int i, int x, ArrayList xs) {
 
 void resize(int capacidad, ArrayList xs) {
     int* temp = new int[capacidad];
-    for(int i=0; i<capacidad; i++) {
+    for(int i=0; i<(lengthAL(xs)-1); i++) {
         temp[i] = xs->elementos[i];
     }
     if (capacidad < lengthAL(xs)) {
         xs->cantidad = capacidad;
     }
-    delete xs -> elementos;
+    delete xs->elementos;
     xs->capacidad = capacidad;
     xs->elementos = temp;
 }
@@ -62,7 +62,7 @@ void add(int x, ArrayList xs) {
 
 void remove(ArrayList xs) {
     if(lengthAL(xs) > 0) {
-        xs->cantidad-- ; 
+        xs->cantidad--; 
     } else {
         cout << "No se puede borrar elemento, el ArrayList esta vacio" << endl;
     }
