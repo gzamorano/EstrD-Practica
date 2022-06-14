@@ -16,7 +16,7 @@ int cantidadDePokemon(Entrenador e);
 int cantidadDePokemonDe(TipoDePokemon tipo, Entrenador e); 
 // Devuelve el pokémon número i de los pokémon del entrenador.
 // Precondición: existen al menos i − 1 pokémon.
-//Pokemon pokemonNro(int i, Entrenador e); 
+Pokemon pokemonNro(int i, Entrenador e); 
 // Dados dos entrenadores, indica si, para cada pokémon del segundo entrenador, el primero
 // posee al menos un pokémon que le gane.
-//bool leGanaATodos(Entrenador e1, Entrenador e2); 
+bool leGanaATodos(Entrenador e1, Entrenador e2); 

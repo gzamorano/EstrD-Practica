@@ -29,9 +29,27 @@ int cantidadDePokemon(Entrenador e) {
 int cantidadDePokemonDe(TipoDePokemon tipo, Entrenador e) {
     int c = 0;
     for(int i=0; i<cantidadDePokemon(e); i++) {
-        if(tipo == (e -> (*pokemon[i]))) {
+        if(tipo == tipoDePokemon(e -> pokemon[i])) {
             c++;
         }
     }
     return c;
+}
+
+Pokemon pokemonNro(int i, Entrenador e) {
+    return (e -> pokemon[i-1]);
+} 
+
+
+bool leGanaATodos(Entrenador e1, Entrenador e2) {
+    bool b = true;
+    for(int i=0; i<cantidadDePokemon(e1); i++) {
+        for(int j=0; j<cantidadDePokemon(e2); j++) {
+            b &= superaA (e1->pokemon[i], e2->pokemon[j]);
+        }
+        if(b){
+            return b;
+        }
+    }
+    return b;
 }
