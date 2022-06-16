@@ -62,16 +62,53 @@ int length(LinkedList xs) {
     return (xs->cantidad);
 }
 
+void Snoc(int x, LinkedList xs) {
+    //Creacion del nodo
+    NodoL* nodo = new NodoL;
+    nodo->elem = x;
+     // Caso cuando está vacía
+    if(xs->primero == NULL) {
+        nodo->siguiente = NULL;
+        xs->primero = nodo;
+    }
+    NodoL* current = xs->primero;
+    // Mientras no esté vacía, se recorre
+    while(current != NULL) {
+        if (current->siguiente == NULL) {
+            current->siguiente = nodo;
+            nodo->siguiente = NULL;
+        }
+        current = current->siguiente;
+    }
+}
 
+ListIterator getIterator(LinkedList xs) {
+    IteratorSt* iterador = new IteratorSt;
+    iterador->current = xs->primero;
+    return iterador;
+}
 
+int current(ListIterator ixs) {
+    return (ixs->current->elem);
+}
 
+void SetCurrent(int x, ListIterator ixs) {
+    ixs->current->elem = x;
+}
 
-// int main() {
+void Next(ListIterator ixs) {
+    ixs->current = ixs->current->siguiente;
+}
 
-//     LinkedList list = nil();
+bool atEnd(ListIterator ixs) {
+    return (ixs->current == NULL);
+}
 
-//     Cons(20, list);
+void DisposeIterator(ListIterator ixs) {
+    delete ixs->current;
+    delete ixs;
+}
 
-//     cout << "El primer elemento de la lista es: " << head(list) << endl;
-//     cout << "y tiene como siguiente a: " << list->primero->siguiente << endl;
-// }
+void DestroyL(LinkedList xs) {
+    delete xs;
+}
