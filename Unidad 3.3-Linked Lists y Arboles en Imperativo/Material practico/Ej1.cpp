@@ -12,6 +12,7 @@ int main() {
     Snoc(6,list);
     Snoc(7,list);
 
+    
 
     string s;
     if(isEmpty(list)){
@@ -29,5 +30,6 @@ int main() {
         cout << current(iterador) << endl;
         Next(iterador);
     }
+    cout << current(iterador) << endl;
     DisposeIterator(iterador);
 }

@@ -31,7 +31,7 @@ bool isEmpty(LinkedList xs) {
     return (xs->cantidad == 0);
 }
 
-
+// Prec: no puede ser vacio xs
 int head(LinkedList xs) {
     return (xs->primero->elem);
 }
@@ -40,17 +40,13 @@ void Cons(int x, LinkedList xs) {
     // creacion del nodo
     NodoL* nodo = new NodoL;
     nodo->elem = x;
-    // Se verifica si la lista esta vacia para enlazar el siguiente nodo.
-    if (xs->primero != NULL) {
-        nodo->siguiente = xs->primero;
-    } else {
-        nodo->siguiente = NULL;
-    }
+    nodo->siguiente = xs->primero;
     // Se asigna el nodo como primero de la lista (adelante de todo) y se aumenta el size.   
     xs->primero = nodo;
     xs->cantidad++;
 }
 
+// Prec: xs no es vacio
 void Tail(LinkedList xs) {
     NodoL* temp = xs->primero;
     xs->primero = xs->primero->siguiente;
@@ -66,20 +62,19 @@ void Snoc(int x, LinkedList xs) {
     //Creacion del nodo
     NodoL* nodo = new NodoL;
     nodo->elem = x;
+    nodo->siguiente = NULL;
      // Caso cuando está vacía
-    if(xs->primero == NULL) {
-        nodo->siguiente = NULL;
+    if(xs->cantidad == 0) {
         xs->primero = nodo;
-    }
-    NodoL* current = xs->primero;
-    // Mientras no esté vacía, se recorre
-    while(current != NULL) {
-        if (current->siguiente == NULL) {
-            current->siguiente = nodo;
-            nodo->siguiente = NULL;
+    } else {
+        // Mientras no esté vacía, se recorre
+        NodoL* current = xs->primero;
+        while(current->siguiente != NULL) {
+            current = current->siguiente;
         }
-        current = current->siguiente;
-    }
+        current->siguiente = nodo;
+    } 
+    xs->cantidad++;
 }
 
 ListIterator getIterator(LinkedList xs) {
@@ -101,7 +96,7 @@ void Next(ListIterator ixs) {
 }
 
 bool atEnd(ListIterator ixs) {
-    return (ixs->current == NULL);
+    return (ixs->current->siguiente == NULL);
 }
 
 void DisposeIterator(ListIterator ixs) {

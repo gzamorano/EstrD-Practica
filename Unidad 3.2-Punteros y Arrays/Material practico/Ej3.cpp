@@ -16,11 +16,23 @@ int main() {
 
     // resize(2, AL);
     // cout << endl;
-    // for(int i=0; i<lengthAL(AL); i++) {
-    //     cout << "AL[" << i << "]: "  << get(i,AL) << endl;
-    // }
-    remove(AL);
-
-    cout << get(4, AL) << endl;
+    
+    for(int i=0; i<lengthAL(AL); i++) {
+        cout << "AL[" << i << "]: "  << get(i,AL) << endl;
+    }
+    
+    resize(10, AL);
+    add(21, AL);
+    add(22, AL);
+    add(23, AL);
+    add(24, AL);
+    add(25, AL);
+    add(26, AL);
+    cout << endl;
+    for(int i=0; i<lengthAL(AL); i++) {
+        cout << "AL[" << i << "]: "  << get(i,AL) << endl;
+    }
+    add(30, AL);
+    //cout << get(4, AL) << endl;
     
 }

@@ -40,7 +40,7 @@ void set(int i, int x, ArrayList xs) {
 
 void resize(int capacidad, ArrayList xs) {
     int* temp = new int[capacidad];
-    for(int i=0; i<(lengthAL(xs)-1); i++) {
+    for(int i=0; i<lengthAL(xs); i++) {
         temp[i] = xs->elementos[i];
     }
     if (capacidad < lengthAL(xs)) {
