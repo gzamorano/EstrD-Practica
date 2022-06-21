@@ -1,5 +1,6 @@
 // Ejercicio 4
 #include <iostream>
+#include "LinkedList.h"
 using namespace std;
 
 struct NodoS;

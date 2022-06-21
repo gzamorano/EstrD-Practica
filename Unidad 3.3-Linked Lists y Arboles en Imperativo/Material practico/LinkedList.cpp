@@ -124,6 +124,6 @@ void DestroyL(LinkedList xs) {
 // O(1)
 //  Agrega todos los elementos de la segunda lista al final de los de la primera.
 //  La segunda lista se destruye.
-void Append(LinkedList xs, LinkedList ys) {
+/*void Append(LinkedList xs, LinkedList ys) {
     ys->primero
-}
+}*/
