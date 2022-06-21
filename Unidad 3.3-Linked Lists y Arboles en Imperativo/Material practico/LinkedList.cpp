@@ -18,7 +18,7 @@ struct IteratorSt {
     NodoL* current;
 };
 
-
+// O(1)
 LinkedList nil() {
     LinkedListSt* list = new LinkedListSt;
     list->cantidad = 0;
@@ -27,15 +27,18 @@ LinkedList nil() {
     return list;
 }
 
+// O(1)
 bool isEmpty(LinkedList xs) {
     return (xs->cantidad == 0);
 }
 
+// O(1)
 // Prec: no puede ser vacio xs
 int head(LinkedList xs) {
     return (xs->primero->elem);
 }
 
+// O(1)
 void Cons(int x, LinkedList xs) {
     // creacion del nodo
     NodoL* nodo = new NodoL;
@@ -46,6 +49,7 @@ void Cons(int x, LinkedList xs) {
     xs->cantidad++;
 }
 
+// O(1)
 // Prec: xs no es vacio
 void Tail(LinkedList xs) {
     NodoL* temp = xs->primero;
@@ -54,10 +58,12 @@ void Tail(LinkedList xs) {
     xs->cantidad--;
 }
 
+// O(1)
 int length(LinkedList xs) {
     return (xs->cantidad);
 }
 
+// O(N) siendo N la cantidad de nodos de xs
 void Snoc(int x, LinkedList xs) {
     //Creacion del nodo
     NodoL* nodo = new NodoL;
@@ -77,33 +83,47 @@ void Snoc(int x, LinkedList xs) {
     xs->cantidad++;
 }
 
+// O(1)
 ListIterator getIterator(LinkedList xs) {
     IteratorSt* iterador = new IteratorSt;
     iterador->current = xs->primero;
     return iterador;
 }
 
+// O(1)
 int current(ListIterator ixs) {
     return (ixs->current->elem);
 }
 
+// O(1)
 void SetCurrent(int x, ListIterator ixs) {
     ixs->current->elem = x;
 }
 
+// O(1)
 void Next(ListIterator ixs) {
     ixs->current = ixs->current->siguiente;
 }
 
+// O(1)
 bool atEnd(ListIterator ixs) {
     return (ixs->current->siguiente == NULL);
 }
 
+// O(1)
 void DisposeIterator(ListIterator ixs) {
-    delete ixs->current;
     delete ixs;
 }
 
+// O(1)
 void DestroyL(LinkedList xs) {
     delete xs;
+}
+
+// Ejercicio 3
+// O(1)
+//  Agrega todos los elementos de la segunda lista al final de los de la primera.
+//  La segunda lista se destruye.
+void Append(LinkedList xs, LinkedList ys) {
+    ys->primero
 }

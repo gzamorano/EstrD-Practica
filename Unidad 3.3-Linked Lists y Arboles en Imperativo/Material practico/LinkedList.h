@@ -38,3 +38,6 @@ bool atEnd(ListIterator ixs);
 void DisposeIterator(ListIterator ixs);
 // Libera la memoria ocupada por la lista
 void DestroyL(LinkedList xs);
+
+// Ejercicio 3, agregar Append a la interfaz del TAD, y que tenga costo O(1)
+void Append(LinkedList xs, LinkedList ys);
