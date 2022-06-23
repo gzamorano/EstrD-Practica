@@ -119,7 +119,7 @@ LinkedList copy(LinkedList xs) {
 // 7. Agrega todos los elementos de la segunda lista al final de los de la primera.
 //    La segunda lista se destruye.
 //    Nota: notar que el costo mejoraría si Snoc fuese O(1), ¿cómo podría serlo?
-void Append(LinkedList xs, LinkedList ys){
+/*void Append(LinkedList xs, LinkedList ys){
     ListIterator iterador = getIterator(ys);
     while(!atEnd(iterador)) {
         Snoc(current(iterador), xs);
@@ -128,7 +128,7 @@ void Append(LinkedList xs, LinkedList ys){
     Snoc(current(iterador), xs);
     DisposeIterator(iterador);
     DestroyL(ys);
-}
+}*/
 
 
 

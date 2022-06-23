@@ -29,10 +29,7 @@ bool isEmptyQ(Queue q) {
 int firstQ(Queue q) {
     return (q->primero->elem);
 }
-// esta de ver el ultimo elemento va de onda, no estaría en la interfaz pedida
-int lastQ(Queue q) {
-    return (q->ultimo->elem);
-}
+
 
 void Enqueue(int x, Queue q) {
     NodoQ* n = new NodoQ;
@@ -51,9 +48,6 @@ void Enqueue(int x, Queue q) {
 void Dequeue(Queue q) {
     NodoQ* temp = q->primero;
     q->primero = q->primero->siguiente;
-    // if(q->primero == NULL) {
-    //     q->ultimo = NULL;
-    // }
     delete temp;
     q->cantidad--;
 }
@@ -62,5 +56,19 @@ int lengthQ(Queue q) {
     return q->cantidad;
 }
 
+void MergeQ(Queue q1, Queue q2) {
+    if(isEmptyQ(q1)) {
+        q1->primero = q2->primero;
+    } else {
+        q1->ultimo->siguiente = q2->primero;
+    }
+    q1->ultimo = q2->ultimo;
+    q1->cantidad += q2->cantidad;
+    delete q2;
+}
+
+void DestroyQ(Queue q) {
+    delete q;
+}
 
 

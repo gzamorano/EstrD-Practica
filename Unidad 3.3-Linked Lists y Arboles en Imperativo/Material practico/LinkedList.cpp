@@ -12,6 +12,7 @@ struct LinkedListSt {
     // desde primero por siguiente hasta alcanzar a NULL
     int cantidad; // cantidad de elementos
     NodoL* primero; // puntero al primer nodo
+    NodoL* ultimo;  // puntero al último nodo
 };
 
 struct IteratorSt {
@@ -23,6 +24,7 @@ LinkedList nil() {
     LinkedListSt* list = new LinkedListSt;
     list->cantidad = 0;
     list->primero = NULL;
+    list->ultimo = NULL;
 
     return list;
 }
@@ -46,6 +48,9 @@ void Cons(int x, LinkedList xs) {
     nodo->siguiente = xs->primero;
     // Se asigna el nodo como primero de la lista (adelante de todo) y se aumenta el size.   
     xs->primero = nodo;
+    if(isEmpty(xs)) {
+        xs->ultimo = nodo;
+    }
     xs->cantidad++;
 }
 
@@ -80,6 +85,7 @@ void Snoc(int x, LinkedList xs) {
         }
         current->siguiente = nodo;
     } 
+    xs->ultimo = nodo;
     xs->cantidad++;
 }
 
@@ -121,9 +127,16 @@ void DestroyL(LinkedList xs) {
 }
 
 // Ejercicio 3
-// O(1)
+// O(1) Para que quede este costo hay que agregar un puntero al último elemento.
 //  Agrega todos los elementos de la segunda lista al final de los de la primera.
 //  La segunda lista se destruye.
-/*void Append(LinkedList xs, LinkedList ys) {
-    ys->primero
-}*/
+void Append(LinkedList xs, LinkedList ys) {
+    if(isEmpty(xs)) {
+        xs->primero = ys->primero;
+    } else {
+        xs->ultimo->siguiente = ys->primero;
+    }
+    xs->ultimo = ys->ultimo;
+    xs->cantidad += ys->cantidad;
+    delete ys;
+}

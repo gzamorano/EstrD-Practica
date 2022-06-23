@@ -33,5 +33,3 @@ void MergeQ(Queue q1, Queue q2);
 // Libera la memoria ocupada por la lista.
 void DestroyQ(Queue q);
 
-
-int lastQ(Queue q);
