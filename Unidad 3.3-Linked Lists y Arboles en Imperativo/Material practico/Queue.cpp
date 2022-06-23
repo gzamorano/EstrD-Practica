@@ -68,6 +68,9 @@ void MergeQ(Queue q1, Queue q2) {
 }
 
 void DestroyQ(Queue q) {
+    while(!isEmptyQ(q)) {
+        Dequeue(q);
+    } 
     delete q;
 }
 

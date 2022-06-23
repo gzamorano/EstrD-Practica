@@ -31,5 +31,6 @@ int lengthQ(Queue q);
 // Costo: O(1).
 void MergeQ(Queue q1, Queue q2);
 // Libera la memoria ocupada por la lista.
+// Costo: O(N)
 void DestroyQ(Queue q);
 
