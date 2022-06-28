@@ -67,3 +67,14 @@ void remove(ArrayList xs) {
         cout << "No se puede borrar elemento, el ArrayList esta vacio" << endl;
     }
 }
+// estas funciones no es parte de la interfaz original
+ArrayList append(ArrayList xs, ArrayList ys) {
+    ArrayList zs = newArrayListWith((lengthAL(xs)+lengthAL(ys))*2);
+    for(int i=0; i<lengthAL(xs); i++) {
+        add(get(i,xs),zs);
+    }
+    for(int i=0; i<lengthAL(ys); i++) {
+        add(get(i,ys),zs);
+    }
+    return zs;
+}

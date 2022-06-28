@@ -23,3 +23,5 @@ void resize(int capacidad, ArrayList xs);
 void add(int x, ArrayList xs);
 // Borra el último elemento de la lista.
 void remove(ArrayList xs);
+
+ArrayList append(ArrayList xs, ArrayList ys);

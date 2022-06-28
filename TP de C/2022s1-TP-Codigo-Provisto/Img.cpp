@@ -21,6 +21,7 @@ struct ITreeSt {
 
 struct ImgSt {
     // COMPLETAR
+    
 };
  /* INV.REP.
     // COMPLETAR
@@ -64,6 +65,7 @@ void CompressImg(Img img) {
 //---------------------------------------------------------
 // AUXILIAR SUGERIDA
 void RenderIT(int x, int y, int w, int h, ITreeSt* t) {
+  
 }
 
 void RenderImg(Img img) {

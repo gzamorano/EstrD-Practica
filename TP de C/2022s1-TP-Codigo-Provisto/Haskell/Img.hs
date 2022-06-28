@@ -122,5 +122,8 @@ renderBlock x y w h c =
        ++ " height=\"" ++ renderSize h ++ "\""
        ++ " style=\"fill:" ++ C.renderColor c ++ ";stroke-width:3;stroke:rgb(0,0,0)\"/>" 
 
+unitSize :: Int
 unitSize     = 50
+
+renderSize :: Int -> [Char]
 renderSize s = show (unitSize * s)

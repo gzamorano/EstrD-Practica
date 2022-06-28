@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Tree.h"
+#include "../../Unidad 3.2-Punteros y Arrays/Material Practico/ArrayList.h"
 using namespace std;
 
 // 1. Dado un árbol binario de enteros devuelve la suma entre sus elementos. 
@@ -44,24 +45,73 @@ int aparicionesT(int e, Tree t) {
 
 // 5. Dado un árbol devuelve su altura.
 int heightT(Tree t) {
-    // sumar 1 + el maximo entre la altura de left y right cuando no es vacio
-    // cuando es vacio devolver 0
-    return 0;
+    if(!isEmptyT(t)) {
+        return 1 + max(heightT(left(t)), heightT(right(t)));
+    } else {
+        return 0;
+    }
+}
+
+// 6. Dado un árbol devuelve una lista con todos sus elementos. 
+ArrayList toList(Tree t) {
+    if(!isEmptyT(t)) {
+        ArrayList r = newArrayList();
+        add(rootT(t), r);
+        return append(append(r, toList(left(t))), toList(right(t)));
+    } else {
+        return newArrayList();
+    }
+    
+}
+
+
+// 7. Dado un árbol devuelve los elementos que se encuentran en sus hojas.
+ArrayList leaves(Tree t) {
+    if(!isEmptyT(t)) {
+        if(isEmptyT(left(t)) && isEmptyT(right(t))) {
+            ArrayList r = newArrayList();
+            add(rootT(t), r);
+            return r;
+        } else {
+            return append(leaves(left(t)), leaves(right(t)));
+        }
+    } else {
+        return newArrayList();
+    }
+}
+
+//8. Dados un número n y un árbol devuelve una lista con los nodos de nivel n.
+ArrayList levelN(int n, Tree t) {
+    if(!isEmptyT(t)) {
+        if(n == 0) {
+            ArrayList r = newArrayList();
+            add(rootT(t), r);
+            return r;
+        } else {
+            return append(levelN(n-1, left(t)), levelN(n-1, right(t)));
+        }
+    } else {
+        return newArrayList();
+    }
 }
 
 
 
 
-
-
 int main() {
-    Tree left = nodeT(2, nodeT(5, NULL, NULL), nodeT(4, NULL, NULL));
+    Tree left = nodeT(2, nodeT(8, NULL, NULL), nodeT(8, NULL, NULL));
 
-    Tree right = nodeT(5, nodeT(6, NULL, NULL), nodeT(7, nodeT(5, NULL, NULL), NULL));
+    Tree right = nodeT(5, nodeT(8, NULL, NULL), nodeT(7, nodeT(8, NULL, NULL), NULL));
     
     Tree t = nodeT(1, left, right);
 
-    //cout << "Cantidad de elementos: " << sizeT(t) << endl;    
-    cout << "Apariciones 5: " << aparicionesT(5,t) << endl;    
+    ArrayList al = levelN(3,t);
 
+    //cout << "Altura del arbol: " << heightT(t) << endl;    
+    //cout << "Apariciones 5: " << aparicionesT(5,t) << endl; 
+     
+    cout << lengthAL(al) << endl;
+    for(int i=0; i<lengthAL(al); i++) {
+        cout << "AL[" << i << "]: "  << get(i,al) << endl;
+    }  
 }
