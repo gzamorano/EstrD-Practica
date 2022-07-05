@@ -32,10 +32,10 @@ int main(int argc, char** args){
       Matrix source1 = M_new(2, 2, red);
       M_setAt(source1,2,2,blue);
       Img img1 = createImg(source1, 2);
-      //cout << sizeImg(img1) << endl;
-      // if (argc >= 3 && strcmp(args[2],"-c") == 0) {
+      if (argc >= 3 && strcmp(args[2],"-c") == 0) {
       //   CompressImg(img1);
-      // }
+      cout << "Dentro de imagen comprimida" << endl;
+      }
       RenderImg(img1);
     }
     if (strcmp(args[1],"2") == 0) {
