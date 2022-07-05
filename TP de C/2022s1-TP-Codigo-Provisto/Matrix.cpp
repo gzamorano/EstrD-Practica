@@ -83,3 +83,31 @@ void M_render(Matrix m) {
   cout << "]" << endl;
   delete(colLen);
 }  
+
+
+//int main() {
+//   Matrix source1 = M_new(2, 2, red);
+//   M_setAt(source1,2,2,blue);
+
+//   int w = 400;
+//   int h = 400;
+  
+// cout << "<svg height=\"" << h << "\" width=\"" << w << "\">" << endl; 
+// cout << "<rect x=\"0\" y=\"0\" width=\"100\" height=\"100\" style=\"fill:";
+// RenderColor(M_getAt(source1,1,1),expectedColumnsLengths(source1)[1]);
+// cout << ";stroke-width:3;stroke:rgb(0,0,0)\"/>" << endl;
+
+// cout << "<rect x=\"100\" y=\"0\" width=\"100\" height=\"100\" style=\"fill:";
+// RenderColor(M_getAt(source1,1,2),expectedColumnsLengths(source1)[1]);
+// cout << ";stroke-width:3;stroke:rgb(0,0,0)\"/>" << endl;
+
+// cout << "<rect x=\"0\" y=\"100\" width=\"100\" height=\"100\" style=\"fill:";
+// RenderColor(M_getAt(source1,2,1),expectedColumnsLengths(source1)[1]);
+// cout << ";stroke-width:3;stroke:rgb(0,0,0)\"/>" << endl;
+
+// cout << "<rect x=\"100\" y=\"100\" width=\"100\" height=\"100\" style=\"fill:";
+// RenderColor(M_getAt(source1,2,2),expectedColumnsLengths(source1)[2]);
+// cout << ";stroke-width:3;stroke:rgb(0,0,0)\"/>" << endl;
+
+// cout << "</svg>";
+//}

@@ -28,20 +28,22 @@ Matrix Source2() {
 int main(int argc, char** args){
   if(argc >= 2) {
     if (strcmp(args[1],"1") == 0) {
+      //cout << "Entraste en la opcion n1" << endl;
       Matrix source1 = M_new(2, 2, red);
       M_setAt(source1,2,2,blue);
       Img img1 = createImg(source1, 2);
-      if (argc >= 3 && strcmp(args[2],"-c") == 0) {
-        CompressImg(img1);
-      }
+      //cout << sizeImg(img1) << endl;
+      // if (argc >= 3 && strcmp(args[2],"-c") == 0) {
+      //   CompressImg(img1);
+      // }
       RenderImg(img1);
     }
     if (strcmp(args[1],"2") == 0) {
       Matrix source2 = Source2(); 
       Img img2 = createImg(source2,8);
-      if (argc >= 3 && strcmp(args[2],"-c") == 0) {
-        CompressImg(img2);
-      }
+      // if (argc >= 3 && strcmp(args[2],"-c") == 0) {
+      //   CompressImg(img2);
+      // }
       RenderImg(img2);
     }
   } else {
